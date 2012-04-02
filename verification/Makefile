@@ -10,7 +10,7 @@ OBJ_DIR=./obj
 QCMS_LIB=-L.. -lqcms
 BIN_DIR=.
 
-all: colorsync-perf transform-image
+all: colorsync-perf transform-image compare-image
 
 transform-image: $(SRC_DIR)/transform-image.c ../libqcms.a
 	$(CC) $(CFLAGS) $(QCMS_LIB) $(CAIRO_CFLAGS) -o $(BIN_DIR)/$@ $< $(LDFLAGS) $(CAIRO_LDFLAGS) $
