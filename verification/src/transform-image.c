@@ -36,6 +36,7 @@ int main(int argc, char **argv)
 
   clock_t cms_start = clock();
   if (cms == 0) {
+	  qcms_enable_iccv4();
 	  input_profile = qcms_profile_from_path(input_path);
 	  output_profile = qcms_profile_from_path(output_path);
     if (!input_profile) {
