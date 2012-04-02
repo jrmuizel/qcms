@@ -1,0 +1,11 @@
+This is a simple verification framework to compare the outputs of qcms, lcms and ColorSync.
+Only the mac platform is supported but patch to add support for Linux/Window are welcome.
+
+Prerequisite:
+Cairo and lcms library. To install use 'sudo port install cairo lcms'.
+
+To run:
+1) Compile 'libqcms.a' qcms target.
+2) Use run.sh
+3) Open tmp/overview.html
+

@@ -1,0 +1,45 @@
+<html>
+<body>
+
+<div id="cmsSelectorDiv"></div>
+<div id="resultDiv"></div>
+
+<script type="text/javascript">
+var qsParm = new Array();
+function qs() {
+  var query = window.location.search.substring(1);
+  var parms = query.split('&');
+  for (var i=0; i<parms.length; i++) {
+    var pos = parms[i].indexOf('=');
+    if (pos > 0) {
+      var key = parms[i].substring(0,pos);
+      var val = parms[i].substring(pos+1);
+      qsParm[key] = val;
+    }
+  }
+} 
+qs();
+
+function cms(id) {
+  var picLen = qsParm["picLen"];
+  var resultDiv = document.getElementById('resultDiv');
+  resultDiv.innerHTML = "";
+  for(i=0; i<picLen; i++) {
+    resultDiv.innerHTML += "<img src='tmp/cms"+id+"_pic" + i + ".png'/>";
+  }
+}
+
+function buildCmsSelector() {
+  var cmsLen = qsParm["cmsLen"];
+  var selectorDiv = document.getElementById('cmsSelectorDiv');
+  selectorDiv.innerHTML = "";
+  for(i=0; i<cmsLen; i++) {
+    selectorDiv.innerHTML += "<a onclick='cms(" + i + ")'>" + qsParm["cmsName" + i] + "<a>"; 
+  }
+}
+buildCmsSelector();
+cms(0);
+</script>
+
+</body>
+</html>

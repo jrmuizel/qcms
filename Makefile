@@ -23,6 +23,9 @@ all: $(PROGRAMS)
 
 $(PROGRAMS): $(QCMS_OBJS)
 
+libqcms.a: $(QCMS_OBJS)
+	ar rcs libqcms.a $(QCMS_OBJS)
+
 gen-coverage:
 	mkdir -p lcov
 	lcov -d . -c --output-file lcov/lcov.info

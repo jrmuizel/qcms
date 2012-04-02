@@ -1,0 +1,90 @@
+<html>
+<body>
+
+<style>
+td { width:15%; }
+</style>
+
+<h2>Transform results</h2>
+<div id="resultDiv"></div>
+
+<script type="text/javascript">
+var tableHTML = new Object();
+
+var catList = "";
+function addCategory(catid, catname) {
+  catList += "<h3>" + catname + "</h3>";
+  catList += "<div id='" + catid + "'></div>";
+  tableHTML[catid] = "<table style=\"width: 80%\" border=\"1\"><thead><tr><td><b>Transform</b><td><b>Total Diff</b><td><b>qcms</b><td><b>lcms</b><td><b>cs</b><td><b>Description</b>";
+}
+function finishCategories() {
+  var resultDiv = document.getElementById('resultDiv');
+  resultDiv.innerHTML = catList;
+
+}
+
+function addResultRow(name, difflcms, diffcs, time1, time2, time3, link, description, catid) {
+  var diff = "";
+  var diffWith = "";
+  if( catid == null || catid == "" ) catid = "v2";
+  if( difflcms == "" && diffcs != "" ) {
+    diff = diffcs;
+    diffWith = " (cs)";
+  } else if( difflcms != "" && diffcs == "" ) {
+    diff = difflcms;
+    diffWith = " (lcms)";
+  } else if( parseInt(difflcms) > parseInt(diffcs) ) {
+    diff = diffcs;
+    diffWith = " (cs)";
+  } else {
+    diff = difflcms;
+    diffWith = " (lcms)";
+  }
+  if( diff == "" ) {
+    diff = "???";
+    tableHTML[catid] += "<tr><td><a href=\"" + link + "\">" + name + "</a><td>" + diff;
+  } else {
+    if( diff >= 1000000 ) {
+      tableHTML[catid] += "<tr><td><a href=\"" + link + "\">" + name + "</a><td style=\"background-color:orange;\">" + diff + diffWith;
+    } else {
+      tableHTML[catid] += "<tr><td><a href=\"" + link + "\">" + name + "</a><td>" + diff + diffWith;
+    }
+  }
+  if( time1 != "" && time2 != "" && time3 != "") {
+    if( parseInt(time1) < parseInt(time2) && parseInt(time1) < parseInt(time3) ) {
+      tableHTML[catid] += "<td style=\"background-color: green;\">" + time1 + "<td>" + time2 + "<td>" + time3;
+    } else if ( parseInt(time2) < parseInt(time3) ){
+      tableHTML[catid] += "<td>" + time1 + "<td style=\"background-color: green;\">" + time2 + "<td>" + time3;
+    } else {
+      tableHTML[catid] += "<td>" + time1 + "<td>" + time2 + "<td style=\"background-color: green;\">" + time3;
+    }
+  } else { 
+    if( time1 == "" ) time1 = "<td style=\"background-color: red;\">Failed";
+                 else time1 = "<td>"  + time1;
+    if( time2 == "" ) time2 = "<td style=\"background-color: red;\">Failed";
+                 else time2 = "<td>"  + time2;
+    if( time3 == "" ) time3 = "<td style=\"background-color: red;\">Failed";
+                 else time3 = "<td>"  + time3;
+    tableHTML[catid] += time1 + time2 + time3;
+  }
+  tableHTML[catid] += "<td>" + description;
+}
+
+function finishTable() {
+  for( var id in tableHTML ) {
+    tableHTML[id] += "</table>";
+    var resultDiv = document.getElementById(id);
+    resultDiv.innerHTML = tableHTML[id];
+  }
+}
+
+addCategory("v2","v2 Profiles");
+addCategory("clut","Color-Lookup Table (CLUT) v4 Profile");
+addCategory("mab","mAB Transform v4 Profile");
+addCategory("param","Parametric Transformation v4 Profile");
+addCategory("pcs","Profile Connection Space Converstion");
+addCategory("negative","Negative Testing (Failure Expected)");
+addCategory("bugzilla","Bugzilla Testcase Profiles");
+finishCategories();
+
+

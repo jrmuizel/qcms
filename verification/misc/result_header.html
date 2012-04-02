@@ -1,0 +1,134 @@
+<html>
+<body>
+
+<div id="descDiv"></div>
+<div id="timeDiv"></div>
+<div id="cmsSelectorDiv"></div>
+<table><tr><td>
+<div id="resultDiv" style="position: relative;"></div>
+<td id="diffHeaderDiv" style="display: none;" valign="top">
+Top Differences:
+  <button onclick="showDiffDiv('lcms');">lcms</button>
+  <button onclick="showDiffDiv('cs');">cs</button>
+  <br>
+  <div id="diffDivlcms" style="display: none;"></div>
+  <div id="diffDivcs"></div>
+<td id="errHeaderDiv" style="display: none;" valign="top">
+<b>Error:</b>
+<div id="errDiv"></div>
+</table>
+
+<script type="text/javascript">
+
+var tid = 0;
+var bestTime = 1000000;
+var bestId = -1;
+
+function showDiffDiv(cmsName) {
+  var div1 = document.getElementById('diffDivlcms');
+  var div2 = document.getElementById('diffDivcs');
+  div1.style.display = "none";
+  div2.style.display = "none";
+  var divShow = document.getElementById('diffDiv' + cmsName);
+  divShow.style.display = "";
+}
+
+function time(name,l) {
+  var timeDiv = document.getElementById('timeDiv');
+  l = parseInt(l);
+  if( l == "" ) {
+    timeDiv.innerHTML += "<a id='time" + tid + "' style=\"background-color: red;\">" + name + ": Failed" + "</a><br>";
+    tid++;
+    return;
+  } else {
+    timeDiv.innerHTML += "<a id='time" + tid + "'>" + name + ": " + l + "</a><br>";
+  }
+  if(l <= bestTime) {
+    bestTime = l;
+    bestId = tid;
+  }
+  tid++;
+}
+
+function declareBestTime() {
+  if( bestId == -1 ) return;
+  var bestTimeElem = document.getElementById('time' + bestId);
+  bestTimeElem.style.backgroundColor = "green";
+}
+
+function addError(name,str) {
+  if( str == "" ) return;
+  var errHeaderDiv = document.getElementById('errHeaderDiv');
+  errHeaderDiv.style.display = "inline";
+  var errDiv = document.getElementById('errDiv');
+  errDiv.innerHTML += "<b>" + name + ":</b><br> " + str + "<br>";
+
+}
+
+function profile(p1, path1, p2, path2) {
+  var descDiv = document.getElementById('descDiv');
+  descDiv.innerHTML = "";
+  descDiv.innerHTML += "<h2><a href="+path1+">"+p1+"</a> -> <a href="+path2+">"+p2+"</a></h2> ";
+}
+
+function cms(pic) {
+  var resultDiv = document.getElementById('resultDiv');
+  resultDiv.innerHTML = "<div id=\"pixelDiv\"/>";
+  resultDiv.innerHTML += "<div id=\"previewDiv\" style=\"display: none; outline:solid; outline-color: black; border:solid; background-color: white; border-color: black;\"/>";
+  resultDiv.innerHTML += "<img src='"+pic+"'/> ";
+}
+
+function buildCmsSelector(name, pic)  {
+  var selectorDiv = document.getElementById('cmsSelectorDiv');
+  selectorDiv.innerHTML += "<button onclick='cms(\"" + pic + "\")'>" + name + "</button> "; 
+}
+
+function diffHide() {
+  var pixelDiv = document.getElementById('pixelDiv');
+  pixelDiv.style.display = "none";
+  var previewDiv = document.getElementById('previewDiv');
+  previewDiv.style.display = "none";
+}
+
+function diffOver(cmsName, str) {
+  var word = str.split(" ");
+
+  var pixelDiv = document.getElementById('pixelDiv');
+  pixelDiv.style.top = parseInt(word[5])-2;
+  pixelDiv.style.left = parseInt(word[3])-2;
+  pixelDiv.style.display = "inline";
+  pixelDiv.style.width = 1;
+  pixelDiv.style.height = 1;
+  pixelDiv.style.zIndex = 10;
+  pixelDiv.style.position = "absolute";
+  pixelDiv.style.borderWidth = "2px";
+  pixelDiv.style.borderStyle = "solid";
+
+  var previewDiv = document.getElementById('previewDiv');
+  previewDiv.style.zIndex = 10;
+  previewDiv.style.position = "absolute";
+  previewDiv.style.display = "inline";
+  previewDiv.style.top = word[5];
+  previewDiv.style.top = parseInt(word[5]) + 10;
+  previewDiv.style.left = word[3];
+  previewDiv.innerHTML = "<table><tbody><tr><td>qcms:</td><td>"+cmsName+":</td></tr><tr><td>"
+                       + "<div style=\"width: 50px; height: 50px; background-color: rgb(" + word[7] + "," +  word[9] + "," + word[11] + ");\"></div>"
+                       + "</td><td>"
+                       + "<div style=\"width: 50px; height: 50px; background-color: rgb(" + word[13] + "," +  word[15] + "," + word[17] + ");\"></div>"
+                       + "</td></tr><tr><td style=\"min-width: 120px;\">"
+                       + "rgb(" + word[7] + "," +  word[9] + "," + word[11] + ")"
+                       + "</td><td style=\"min-width: 120px;\">"
+                       + "rgb(" + word[13] + "," +  word[15] + "," + word[17] + ")"
+                       + "</td></tr></tbody></table>";
+
+}
+
+function diff(cmsName, str) {
+  var diffHeaderDiv = document.getElementById('diffHeaderDiv');
+  diffHeaderDiv.style.display = "inline";
+  var diffDiv = document.getElementById('diffDiv'+cmsName);
+  var words = str.split(" ");
+  diffDiv.innerHTML += "<a href=\"#\" onmouseout=\"diffHide()\" onmouseover='diffOver(\"" + cmsName + "\",\"" + str + "\")'>" + str + "</a><br> "; 
+}
+
+
