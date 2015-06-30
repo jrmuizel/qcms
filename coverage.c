@@ -37,7 +37,7 @@ const unsigned char gray_icc[] =
 void test_gray(qcms_profile *output_profile)
 {
 	unsigned char srct[3] = { 221, 79, 129};
-	unsigned char outt[3];
+	unsigned char outt[4];
 	qcms_transform *transform;
 	qcms_profile *gray_profile = qcms_profile_from_memory(gray_icc, sizeof(gray_icc));
 	assert(gray_profile);
