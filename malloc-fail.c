@@ -74,9 +74,6 @@ void test_gray_precache(qcms_profile *output_profile)
 
 }
 void do_test(void) {
-	unsigned char srct[4] = { 221, 79, 129, 92};
-	unsigned char outt[4];
-	qcms_transform *transform;
 	qcms_profile *input_profile, *output_profile, *rgb;
 	qcms_CIE_xyY invalid_white_point = { 0., 0., 1.};
 	qcms_CIE_xyY white_point = { 0.9, 1., 1.};
