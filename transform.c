@@ -1363,8 +1363,18 @@ qcms_transform* qcms_transform_create(
 }
 
 #if defined(__GNUC__) && !defined(__x86_64__) && !defined(__amd64__)
+#if !defined(__has_attribute)
+/* Assume that the compiler supports the provided attribute. */
+#define __has_attribute(x) 1
+#endif
+#if __has_attribute(__force_align_arg_pointer__)
 /* we need this to avoid crashes when gcc assumes the stack is 128bit aligned */
 __attribute__((__force_align_arg_pointer__))
+#else
+/* Clang/ARM (r161757) does not support the __force_align_arg_pointer__
+ * attribute. Hopefully this is not an issue on this platform.
+ */
+#endif
 #endif
 void qcms_transform_data(qcms_transform *transform, void *src, void *dest, size_t length)
 {
